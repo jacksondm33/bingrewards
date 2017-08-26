@@ -1,0 +1,9 @@
+{
+	"email" : "example@example.com",
+	"password" : "topsecret",
+	"count" : 30,
+	"mobileCount" : 20,
+	"delay" : 5,
+	"delayRandom" : 5,
+	"accountDelay" : 30
+}
