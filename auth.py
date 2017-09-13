@@ -52,7 +52,7 @@ class Account:
         PPFT = cutText[cutText.index("value=") + 7:cutText.index("\"/>")] # Cut PPFT
         self.data["PPFT"] = PPFT
         # Get PPSX
-        index = res.text.index(",t:\'") # Find PPSX
+        index = res.text.index(",r:\'") # Find PPSX
         cutText = res.text[index + 4:] # Cut Text at Start of PPSX
         PPSX = cutText[:cutText.index("\'")] # Cut at End of PPSX
         self.data["PPSX"] = PPSX
