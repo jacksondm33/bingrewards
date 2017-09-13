@@ -14,9 +14,9 @@ This uses some code from sealemar/BingRewards repository.
 
 4. Run `git clone https://github.com/jacksondm33/BingRewards.git`
 
-5. Rename [config.json.example] to [config.json]
+5. Rename `config.json.example` to `config.json`
 
-6. Open [config.json] and replace the examples with your email and password
+6. Open `config.json` and replace the examples with your email and password
 
 7. Change any other settings if needed and save the file
 
