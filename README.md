@@ -6,26 +6,20 @@ This uses some code from sealemar/BingRewards repository.
 
 # Install
 
-Windows, without git:
+1. [Download and install python 3](https://www.python.org/downloads)
 
-1. Download and Install Python 3 at "https://www.python.org/downloads/"
+2. [Download and install git](https://git-scm.com/downloads)
 
-2. Go to "https://github.com/jacksondm33/BingRewards"
+3. `cd` to installation directory of choice
 
-3. Click on the "Clone or download" button and then click "Download ZIP"
+4. Run `git clone https://github.com/jacksondm33/BingRewards.git`
 
-4. Extract the downloaded file and go into the folder
+5. Rename [config.json.example] to [config.json]
 
-5. Rename "config.json.example" to "config.json"
+6. Open [config.json] and replace the examples with your email and password
 
-6. Open config.json and put in your email and password where the examples are
+7. Change any other settings if needed and save the file
 
-5. Run the file called "bing.py"
+8. Run `python bing.py` or `python3 bing.py` if you have multiple versions installed
 
-If the file opens in notepad instead:
 
-1. Hold the SHIFT key and right click NOT on a file
-
-2. Click "Open in Command Prompt"
-
-3. Type the following and press enter "python bing.py"
