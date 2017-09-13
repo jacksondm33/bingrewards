@@ -14,12 +14,14 @@ delay = config["delay"]
 delayRandom = config["delayRandom"]
 cur = 1 # Current Query Number
 account = auth.Account(config["email"], config["password"]) # Init Account
-# Generate PC Queries
+# Generate Queries
 gen = gt.queryGenerator(1)
-querySet = gen.generateQueries(count, set())
+queryList = list(gen.generateQueries(count + mobileCount, set()))
+pcQueryList = queryList[:count]
+mobileQueryList = queryList[count:]
 account.login() # Login Account on PC
 # Do Searches
-for query in querySet:
+for query in pcQueryList:
     print("PC Query " + str(cur) + " / " + str(count) + " : " + query)
     account.get(c.searchURL + query, cookies=account.cookies)
     sleep(delay + uniform(0, delayRandom))
@@ -27,12 +29,9 @@ for query in querySet:
 account.logout() # Logout
 sleep(config["accountDelay"])
 cur = 1 # Reset Current Query Number
-# Generate Mobile Queries
-gen = gt.queryGenerator(1)
-querySet = gen.generateQueries(mobileCount, set())
 account.login(mobile=True) # Login Account on Mobile
 # Do Searches
-for query in querySet:
+for query in mobileQueryList:
     print("Mobile Query " + str(cur) + " / " + str(mobileCount) + " : " + query)
     account.get(c.searchURL + query, cookies=account.cookies)
     sleep(delay + uniform(0, delayRandom))
