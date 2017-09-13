@@ -22,6 +22,8 @@ This uses some code from sealemar/BingRewards repository.
 
 8. Run `pip(3) install requests bs4`
 
-9. Run `python(3) bing.py`
+## Run
+
+Run `python(3) bing.py`
 
 
