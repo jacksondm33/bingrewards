@@ -24,6 +24,6 @@ This uses some code from sealemar/BingRewards repository.
 
 ## Run
 
-Run `python(3) bing.py`
+Run `python(3) bing.py` in the installation directory
 
 
