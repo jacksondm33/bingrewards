@@ -1,6 +1,6 @@
 {
-	"email" : "example@example.com",
-	"password" : "topsecret",
+	"email" : "",
+	"password" : "",
 	"count" : 30,
 	"mobileCount" : 20,
 	"delay" : 5,

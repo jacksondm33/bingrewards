@@ -16,9 +16,11 @@ This uses some code from sealemar/BingRewards repository.
 
 5. Rename `config.json.example` to `config.json`
 
-6. Open `config.json` and replace the examples with your email and password (not required)
+6. Open `config.json` and input your email and password (not required)
 
-7. Change any other settings if needed and save the file
+7. Change any of the other settings if needed
+
+8. Save and close the file
 
 8. Run `pip3 install requests bs4`
 
