@@ -4,6 +4,7 @@ import common as c
 import json
 from time import sleep
 from random import uniform
+import getpass
 
 # Get Config
 with open("config.json", "r") as f:
@@ -13,6 +14,10 @@ mobileCount = config["mobileCount"]
 delay = config["delay"]
 delayRandom = config["delayRandom"]
 cur = 1 # Current Query Number
+if(config["email"] == ""):
+    config["email"] = input("Email: ")
+if(config["password"] == ""):
+    config["password"] = getpass.getpass()
 account = auth.Account(config["email"], config["password"]) # Init Account
 # Generate Queries
 gen = gt.queryGenerator(1)
@@ -37,6 +42,3 @@ for query in mobileQueryList:
     sleep(delay + uniform(0, delayRandom))
     cur += 1
 account.logout() # Logout
-
-
-  
