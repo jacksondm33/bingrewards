@@ -16,14 +16,14 @@ This uses some code from sealemar/BingRewards repository.
 
 5. Rename `config.json.example` to `config.json`
 
-6. Open `config.json` and replace the examples with your email and password
+6. Open `config.json` and replace the examples with your email and password (not required)
 
 7. Change any other settings if needed and save the file
 
-8. Run `pip(3) install requests bs4`
+8. Run `pip3 install requests bs4`
 
 ## Run
 
-Run `python(3) bing.py` in the installation directory
+Run `python3 bing.py` in the installation directory
 
 
