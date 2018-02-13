@@ -13,32 +13,35 @@ count = config["count"]
 mobileCount = config["mobileCount"]
 delay = config["delay"]
 delayRandom = config["delayRandom"]
-cur = 1 # Current Query Number
-if(config["email"] == ""):
-    config["email"] = input("Email: ")
-if(config["password"] == ""):
-    config["password"] = getpass.getpass()
-account = auth.Account(config["email"], config["password"]) # Init Account
-# Generate Queries
-gen = gt.queryGenerator(1)
-queryList = list(gen.generateQueries(count + mobileCount, set()))
-pcQueryList = queryList[:count]
-mobileQueryList = queryList[count:]
-account.login() # Login Account on PC
-# Do Searches
-for query in pcQueryList:
-    print("PC Query " + str(cur) + " / " + str(count) + " : " + query)
-    account.get(c.searchURL + query, cookies=account.cookies)
-    sleep(delay + uniform(0, delayRandom))
-    cur += 1
-account.logout() # Logout
-sleep(config["accountDelay"])
-cur = 1 # Reset Current Query Number
-account.login(mobile=True) # Login Account on Mobile
-# Do Searches
-for query in mobileQueryList:
-    print("Mobile Query " + str(cur) + " / " + str(mobileCount) + " : " + query)
-    account.get(c.searchURL + query, cookies=account.cookies)
-    sleep(delay + uniform(0, delayRandom))
-    cur += 1
-account.logout() # Logout
+for login in config["accounts"]:
+    cur = 1 # Current Query Number
+    if(login["email"] == ""):
+        login["email"] = input("Email: ")
+    if(login["password"] == ""):
+        login["password"] = getpass.getpass(login["email"] + " Password: ")
+    account = auth.Account(login["email"], login["password"]) # Init Account
+    # Generate Queries
+    gen = gt.queryGenerator(1)
+    queryList = list(gen.generateQueries(count + mobileCount, set()))
+    pcQueryList = queryList[:count]
+    mobileQueryList = queryList[count:]
+    account.login() # Login Account on PC
+    # Do Searches
+    for query in pcQueryList:
+        print(login["email"] + " : PC Query " + str(cur) + " / " + str(count) + " : " + query)
+        account.get(c.searchURL + query, cookies=account.cookies)
+        sleep(delay + uniform(0, delayRandom))
+        cur += 1
+    account.logout() # Logout
+    sleep(config["accountDelay"])
+    cur = 1 # Reset Current Query Number
+    account.login(mobile=True) # Login Account on Mobile
+    # Do Searches
+    for query in mobileQueryList:
+        print(login["email"] + " : Mobile Query " + str(cur) + " / " + str(mobileCount) + " : " + query)
+        account.get(c.searchURL + query, cookies=account.cookies)
+        sleep(delay + uniform(0, delayRandom))
+        cur += 1
+    account.logout() # Logout
+    sleep(config["accountDelay"])
+    

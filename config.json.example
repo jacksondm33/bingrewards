@@ -1,6 +1,14 @@
 {
-	"email" : "",
-	"password" : "",
+	"accounts": [
+		{
+			"email": "example@example.com",
+			"password": ""
+		},
+		{
+			"email": "example2@example.com",
+			"password": "example"
+		}
+	],
 	"count" : 30,
 	"mobileCount" : 20,
 	"delay" : 5,
