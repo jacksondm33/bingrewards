@@ -2,11 +2,13 @@
 	"accounts": [
 		{
 			"email": "example@example.com",
-			"password": ""
+			"password": "",
+			"mode": "cookie or password"
 		},
 		{
 			"email": "example2@example.com",
-			"password": "example"
+			"password": "example",
+			"mode": "cookie or password"
 		}
 	],
 	"count" : 30,
