@@ -4,6 +4,12 @@ This is a Bing Rewards automation script written in python.
 
 This uses some code from sealemar/BingRewards repository.
 
+## Builds
+
+|Master|
+|:----:|
+[![BuildStatus](https://travis-ci.org/jacksondm33/BingRewards.svg?branch=master)](https://travis-ci.org/jacksondm33/BingRewards)
+
 ## Install
 
 1. [Download and install python 3](https://www.python.org/downloads)
