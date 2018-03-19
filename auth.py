@@ -12,8 +12,7 @@ USE_SELF = object()
 class Account:
 
     headers = c.headers
-    cookies = None
-    params = None
+    cookies = requests.cookies.RequestsCookieJar()
     data = None
     proxies = c.proxies
 
@@ -22,13 +21,14 @@ class Account:
         self.password = password
         self.mode = mode
 
-    def login(self, mobile=False):
+    def login(self, mobile=False, useProxy=False):
         if self.mode == "cookie":
-            loginURL = self.preLogin(cookie=True)  # Login with cookie
-            res = self.get(loginURL)
+            loginURL = self.preLogin(
+                cookie=True, useProxy=useProxy)  # Login with cookie
+            res = self.get(loginURL, useProxy=useProxy)
         else:
-            postURL = self.preLogin()
-            res = self.post(postURL)
+            postURL = self.preLogin(useProxy=useProxy)
+            res = self.post(postURL, data=self.data, useProxy=useProxy)
         # Parse HTML Form
         form = BeautifulSoup(res.text, "html.parser").findAll("form")[
             0]  # Get Form
@@ -36,12 +36,13 @@ class Account:
         for field in form:
             params[field["name"]] = field["value"]  # Add each field to params
         self.headers["Host"] = c.host  # Set Host to Bing Server
-        res = self.post(form.get("action"), data=params)
+        self.cookies.clear()
+        res = self.post(form.get("action"), data=params, useProxy=useProxy)
         if mobile:
             self.headers = c.mobileHeaders
 
-    def preLogin(self, cookie=False):
-        res = self.get(c.hostURL)
+    def preLogin(self, cookie=False, useProxy=False):
+        res = self.get(c.hostURL, useProxy=useProxy)
         # Get Login URL
         index = res.text.index("WindowsLiveId")  # Find URL
         cutText = res.text[index + 16:]  # Cut Text at Start of URL
@@ -50,7 +51,7 @@ class Account:
         loginURL = bytes(loginURL, encoding="UTF-8").decode("unicode_escape")
         # Get Login Cookies
         self.headers["Host"] = c.loginHost  # Set Host to Login Server
-        res = self.get(loginURL)
+        res = self.get(loginURL, useProxy=useProxy)
         if cookie:
             self.cookies.set_cookie(self.getAuthCookie())  # Set Login Cookie
             return loginURL
@@ -78,9 +79,7 @@ class Account:
         return postURL
 
     def logout(self):
-        self.cookies = None
-        self.params = None
-        self.data = None
+        self.cookies.clear()
 
     def getAuthData(self):
         return {
@@ -127,30 +126,20 @@ class Account:
             rest=None
         )
 
-    def get(self, URL, headers=USE_SELF, cookies=USE_SELF, params=USE_SELF, data=USE_SELF, proxies=USE_SELF, useProxy=False, setReferer=True, setCookies=True):
+    def request(self, method, URL, headers=USE_SELF, cookies=USE_SELF, params=None, data=None, proxies=USE_SELF, useProxy=False, setReferer=True, setCookies=True):
         headers = self.headers if headers is USE_SELF else headers
         cookies = self.cookies if cookies is USE_SELF else cookies
-        params = self.params if params is USE_SELF else params
-        data = self.data if data is USE_SELF else data
         proxies = self.proxies if proxies is USE_SELF else proxies
-        res = requests.get(URL, headers=headers, cookies=cookies,
-                           params=params, data=data, proxies=proxies if useProxy else None)
+        res = requests.request(method, URL, headers=headers, cookies=cookies,
+                               params=params, data=data, proxies=proxies if useProxy else None, verify=False)
         if setReferer:
             self.headers["Referer"] = URL
         if setCookies:
-            self.cookies = res.cookies
+            self.cookies.update(res.cookies)
         return res
 
-    def post(self, URL, headers=USE_SELF, cookies=USE_SELF, params=USE_SELF, data=USE_SELF, proxies=USE_SELF, useProxy=False, setReferer=True, setCookies=True):
-        headers = self.headers if headers is USE_SELF else headers
-        cookies = self.cookies if cookies is USE_SELF else cookies
-        params = self.params if params is USE_SELF else params
-        data = self.data if data is USE_SELF else data
-        proxies = self.proxies if proxies is USE_SELF else proxies
-        res = requests.post(URL, headers=headers, cookies=cookies,
-                            params=params, data=data, proxies=proxies if useProxy else None)
-        if setReferer:
-            self.headers["Referer"] = URL
-        if setCookies:
-            self.cookies = res.cookies
-        return res
+    def get(self, URL, headers=USE_SELF, cookies=USE_SELF, params=None, data=None, proxies=USE_SELF, useProxy=False, setReferer=True, setCookies=True):
+        return self.request('GET', URL, headers, cookies, params, data, proxies, useProxy, setReferer, setCookies)
+
+    def post(self, URL, headers=USE_SELF, cookies=USE_SELF, params=None, data=None, proxies=USE_SELF, useProxy=False, setReferer=True, setCookies=True):
+        return self.request('POST', URL, headers, cookies, params, data, proxies, useProxy, setReferer, setCookies)
