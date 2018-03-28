@@ -131,7 +131,7 @@ class Account:
         cookies = self.cookies if cookies is USE_SELF else cookies
         proxies = self.proxies if proxies is USE_SELF else proxies
         res = requests.request(method, URL, headers=headers, cookies=cookies,
-                               params=params, data=data, proxies=proxies if useProxy else None, verify=False)
+                               params=params, data=data, proxies=proxies if useProxy else None)
         if setReferer:
             self.headers["Referer"] = URL
         if setCookies:
