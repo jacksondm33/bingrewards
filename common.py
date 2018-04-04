@@ -9,5 +9,8 @@ mobile_ua = "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; NOKIA; Lumia 822) A
 accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
 acceptLang = "en-US,en;q=0.5"
 connection = "close"
-headers = {"Host" : host, "User-Agent" : ua, "Accept" : accept, "Accept-Language" : acceptLang, "Connection" : connection}
-mobileHeaders = {"Host" : host, "User-Agent" : mobile_ua, "Accept" : accept, "Accept-Language" : acceptLang, "Connection" : connection}
+headers = {"Host": host, "User-Agent": ua, "Accept": accept,
+           "Accept-Language": acceptLang, "Connection": connection}
+mobileHeaders = {"Host": host, "User-Agent": mobile_ua, "Accept": accept,
+                 "Accept-Language": acceptLang, "Connection": connection}
+proxies = {"http": "127.0.0.1:8080", "https": "127.0.0.1:8080"}
