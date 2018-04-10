@@ -30,21 +30,21 @@ class Account:
             self.cookie = False
 
     def login(self, mobile=False, useProxy=False):
+        if not self.cookie:
+            postURL = self.preLogin(useProxy=useProxy)
+            res = self.post(postURL, data=self.data, useProxy=useProxy)
+            # Parse HTML Form
+            form = BeautifulSoup(res.text, "html.parser").findAll("form")[
+                0]  # Get Form
+            params = dict()
+            for field in form:
+                # Add each field to params
+                params[field["name"]] = field["value"]
+            self.headers["Host"] = c.host  # Set Host to Bing Server
+            self.cookies.clear()
+            res = self.post(form.get("action"), data=params, useProxy=useProxy)
         if mobile:
             self.headers = c.mobileHeaders
-        if self.cookie:
-            return
-        postURL = self.preLogin(useProxy=useProxy)
-        res = self.post(postURL, data=self.data, useProxy=useProxy)
-        # Parse HTML Form
-        form = BeautifulSoup(res.text, "html.parser").findAll("form")[
-            0]  # Get Form
-        params = dict()
-        for field in form:
-            params[field["name"]] = field["value"]  # Add each field to params
-        self.headers["Host"] = c.host  # Set Host to Bing Server
-        self.cookies.clear()
-        res = self.post(form.get("action"), data=params, useProxy=useProxy)
 
     def preLogin(self, useProxy=False):
         res = self.get(c.hostURL, useProxy=useProxy)
