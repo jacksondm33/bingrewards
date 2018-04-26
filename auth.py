@@ -3,7 +3,8 @@ import common as c
 import time
 from bs4 import BeautifulSoup
 from random import randint
-from http.cookiejar import Cookie
+from http.cookies import SimpleCookie
+from requests.cookies import RequestsCookieJar
 
 
 USE_SELF = object()
@@ -12,36 +13,41 @@ USE_SELF = object()
 class Account:
 
     headers = c.headers
-    cookies = requests.cookies.RequestsCookieJar()
     data = None
     proxies = c.proxies
 
-    def __init__(self, email, password, mode):
+    def __init__(self, email, password=None, cookie=None):
         self.email = email
-        self.password = password
-        self.mode = mode
+        self.cookies = RequestsCookieJar()
+        if password is None:
+            temp_cookie = SimpleCookie()
+            temp_cookie.load(cookie)
+            for key, morsel in temp_cookie.items():
+                self.cookies[key] = morsel.value
+            self.cookie = True
+        else:
+            self.password = password
+            self.cookie = False
 
     def login(self, mobile=False, useProxy=False):
-        if self.mode == "cookie":
-            loginURL = self.preLogin(
-                cookie=True, useProxy=useProxy)  # Login with cookie
-            res = self.get(loginURL, useProxy=useProxy)
-        else:
+        self.headers = c.headers
+        if not self.cookie:
             postURL = self.preLogin(useProxy=useProxy)
             res = self.post(postURL, data=self.data, useProxy=useProxy)
-        # Parse HTML Form
-        form = BeautifulSoup(res.text, "html.parser").findAll("form")[
-            0]  # Get Form
-        params = dict()
-        for field in form:
-            params[field["name"]] = field["value"]  # Add each field to params
-        self.headers["Host"] = c.host  # Set Host to Bing Server
-        self.cookies.clear()
-        res = self.post(form.get("action"), data=params, useProxy=useProxy)
+            # Parse HTML Form
+            form = BeautifulSoup(res.text, "html.parser").findAll("form")[
+                0]  # Get Form
+            params = dict()
+            for field in form:
+                # Add each field to params
+                params[field["name"]] = field["value"]
+            self.headers["Host"] = c.host  # Set Host to Bing Server
+            self.cookies.clear()
+            res = self.post(form.get("action"), data=params, useProxy=useProxy)
         if mobile:
             self.headers = c.mobileHeaders
 
-    def preLogin(self, cookie=False, useProxy=False):
+    def preLogin(self, useProxy=False):
         res = self.get(c.hostURL, useProxy=useProxy)
         # Get Login URL
         index = res.text.index("WindowsLiveId")  # Find URL
@@ -52,9 +58,6 @@ class Account:
         # Get Login Cookies
         self.headers["Host"] = c.loginHost  # Set Host to Login Server
         res = self.get(loginURL, useProxy=useProxy)
-        if cookie:
-            self.cookies.set_cookie(self.getAuthCookie())  # Set Login Cookie
-            return loginURL
         self.data = self.getAuthData()
         self.cookies["CkTst"] = "G" + \
             str(int(time.time() * 1000))  # Add Time Cookie
@@ -69,7 +72,7 @@ class Account:
             "value=") + 7:cutText.index("\"/>")]  # Cut PPFT
         self.data["PPFT"] = PPFT
         # Get PPSX
-        index = res.text.index(",r:\'")  # Find PPSX
+        index = res.text.index(",bH:\'")  # Find PPSX
         cutText = res.text[index + 4:]  # Cut Text at Start of PPSX
         PPSX = cutText[:cutText.index("\'")]  # Cut at End of PPSX
         self.data["PPSX"] = PPSX
@@ -79,7 +82,8 @@ class Account:
         return postURL
 
     def logout(self):
-        self.cookies.clear()
+        if not self.cookie:
+            self.cookies.clear()
 
     def getAuthData(self):
         return {
@@ -105,26 +109,6 @@ class Account:
             "i18": "__ConvergedLoginPaginatedStrings%7C1%2C__ConvergedLogin_PCore%7C1%2C",
             "i19": "2" + str(randint(0, 5000))
         }
-
-    def getAuthCookie(self):
-        return Cookie(
-            version=0,
-            name="PPAuth",
-            value=self.password,
-            port=None,
-            port_specified=False,
-            domain=".login.live.com",
-            domain_specified=True,
-            domain_initial_dot=False,
-            path="/",
-            path_specified=True,
-            secure=False,
-            expires=None,
-            discard=False,
-            comment=None,
-            comment_url=None,
-            rest=None
-        )
 
     def request(self, method, URL, headers=USE_SELF, cookies=USE_SELF, params=None, data=None, proxies=USE_SELF, useProxy=False, setReferer=True, setCookies=True):
         headers = self.headers if headers is USE_SELF else headers

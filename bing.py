@@ -17,10 +17,13 @@ for login in config["accounts"]:
     cur = 1  # Current Query Number
     if(login["email"] == ""):
         login["email"] = input("Email: ")
-    if(login["password"] == ""):
-        login["password"] = getpass.getpass(login["email"] + " Password: ")
-    account = auth.Account(
-        login["email"], login["password"], login["mode"])  # Init Account
+    if(login["mode"] == "password"):
+        if(login["password"] == ""):
+            login["password"] = getpass.getpass(login["email"] + " Password: ")
+        account = auth.Account(
+            login["email"], password=login["password"])
+    elif(login["mode"] == "cookie"):
+        account = auth.Account(login["email"], cookie=login["cookie"])
     # Generate Queries
     gen = gt.queryGenerator(1)
     queryList = list(gen.generateQueries(count + mobileCount, set()))
