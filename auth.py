@@ -30,6 +30,7 @@ class Account:
             self.cookie = False
 
     def login(self, mobile=False, useProxy=False):
+        self.headers = c.headers
         if not self.cookie:
             postURL = self.preLogin(useProxy=useProxy)
             res = self.post(postURL, data=self.data, useProxy=useProxy)
