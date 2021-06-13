@@ -1,11 +1,10 @@
-import requests
-import common as c
 import time
-from bs4 import BeautifulSoup
 from random import randint
 from http.cookies import SimpleCookie
+import requests
 from requests.cookies import RequestsCookieJar
-
+from bs4 import BeautifulSoup
+import common as c
 
 USE_SELF = object()
 
@@ -35,8 +34,8 @@ class Account:
             postURL = self.preLogin(useProxy=useProxy)
             res = self.post(postURL, data=self.data, useProxy=useProxy)
             # Parse HTML Form
-            form = BeautifulSoup(res.text, "html.parser").findAll("form")[
-                0]  # Get Form
+            form = BeautifulSoup(res.text,
+                                 "html.parser").findAll("form")[0]  # Get Form
             params = dict()
             for field in form:
                 # Add each field to params
@@ -68,8 +67,8 @@ class Account:
         # Get PPFT
         index = res.text.index("sFTTag")  # Find PPFT
         cutText = res.text[index:]  # Cut Text Near PPFT
-        PPFT = cutText[cutText.index(
-            "value=") + 7:cutText.index("\"/>")]  # Cut PPFT
+        PPFT = cutText[cutText.index("value=") +
+                       7:cutText.index("\"/>")]  # Cut PPFT
         self.data["PPFT"] = PPFT
         # Get PPSX
         index = res.text.index(",bH:\'")  # Find PPSX
@@ -106,24 +105,61 @@ class Account:
             "i21": "0",
             "i2": "1",
             "i17": "0",
-            "i18": "__ConvergedLoginPaginatedStrings%7C1%2C__ConvergedLogin_PCore%7C1%2C",
+            "i18":
+            "__ConvergedLoginPaginatedStrings%7C1%2C__ConvergedLogin_PCore%7C1%2C",
             "i19": "2" + str(randint(0, 5000))
         }
 
-    def request(self, method, URL, headers=USE_SELF, cookies=USE_SELF, params=None, data=None, proxies=USE_SELF, useProxy=False, setReferer=True, setCookies=True):
+    def request(self,
+                method,
+                URL,
+                headers=USE_SELF,
+                cookies=USE_SELF,
+                params=None,
+                data=None,
+                proxies=USE_SELF,
+                useProxy=False,
+                setReferer=True,
+                setCookies=True):
         headers = self.headers if headers is USE_SELF else headers
         cookies = self.cookies if cookies is USE_SELF else cookies
         proxies = self.proxies if proxies is USE_SELF else proxies
-        res = requests.request(method, URL, headers=headers, cookies=cookies,
-                               params=params, data=data, proxies=proxies if useProxy else None)
+        res = requests.request(
+            method,
+            URL,
+            headers=headers,
+            cookies=cookies,
+            params=params,
+            data=data,
+            proxies=proxies if useProxy else None)
         if setReferer:
             self.headers["Referer"] = URL
         if setCookies:
             self.cookies.update(res.cookies)
         return res
 
-    def get(self, URL, headers=USE_SELF, cookies=USE_SELF, params=None, data=None, proxies=USE_SELF, useProxy=False, setReferer=True, setCookies=True):
-        return self.request('GET', URL, headers, cookies, params, data, proxies, useProxy, setReferer, setCookies)
+    def get(self,
+            URL,
+            headers=USE_SELF,
+            cookies=USE_SELF,
+            params=None,
+            data=None,
+            proxies=USE_SELF,
+            useProxy=False,
+            setReferer=True,
+            setCookies=True):
+        return self.request('GET', URL, headers, cookies, params, data,
+                            proxies, useProxy, setReferer, setCookies)
 
-    def post(self, URL, headers=USE_SELF, cookies=USE_SELF, params=None, data=None, proxies=USE_SELF, useProxy=False, setReferer=True, setCookies=True):
-        return self.request('POST', URL, headers, cookies, params, data, proxies, useProxy, setReferer, setCookies)
+    def post(self,
+             URL,
+             headers=USE_SELF,
+             cookies=USE_SELF,
+             params=None,
+             data=None,
+             proxies=USE_SELF,
+             useProxy=False,
+             setReferer=True,
+             setCookies=True):
+        return self.request('POST', URL, headers, cookies, params, data,
+                            proxies, useProxy, setReferer, setCookies)
