@@ -1,0 +1,21 @@
+{
+    "accounts": [
+        {
+            "email": "---INSERT EMAIL HERE---",
+            "password": "",
+            "cookie": "---INSERT COOKIE HERE---",
+            "mode": "cookie"
+        },
+        {
+            "email": "---INSERT EMAIL HERE---",
+            "password": "---INSERT PASSWORD HERE---",
+            "cookie": "",
+            "mode": "password"
+        }
+    ],
+    "count" : 30,
+    "mobileCount" : 20,
+    "delay" : 5,
+    "delayRandom" : 5,
+    "accountDelay" : 30
+}

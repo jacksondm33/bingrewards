@@ -2,7 +2,7 @@ import json
 from time import sleep
 from random import uniform
 import getpass
-import googleTrends as gt
+import google_trends as gt
 import auth
 import common as c
 
